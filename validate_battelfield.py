@@ -1,60 +1,83 @@
 def validate_battlefield(field):
     boats = {'1': 0, '2': 0, '3': 0, '4': 0}
     correct_boats = {'1': 4, '2': 3, '3': 2, '4': 1}
-    count_boat = 0
-    
-    # Go over the row
-    for boat_row in range(0, len(field)):
-        #print (field[boat_row])
-        # Go through each member of the row
-        for boat_column in range(0, len(field[boat_row])):
-            #print (f'Element in the row: {field[boat_row][boat_column]} - column: {boat_column} - row: {boat_row}')
-            if field[boat_row][boat_column] == 1 and field[boat_row - 1][boat_column] != 1 and field[boat_row + 1][boat_column] != 1 and field[boat_row][boat_column - 1] != 1 and field[boat_row][boat_column + 1] != 1:
-                boats['1'] += 1
-            elif field[boat_row][boat_column] == 1 and field[boat_row - 1][boat_column] != 1 and field[boat_row][boat_column - 1] != 1 and field[boat_row][boat_column + 1] != 1:
-                #print (f'There might be a boat on column: {boat_column} - row: {boat_row}')
-                for index_row in range(boat_row, len(field)):
-                    if field[index_row][boat_column] == 1:
-                        count_boat += 1
+
+    def check_neighbors(row, col):
+        # Check if any diagonal neighbors are occupied (for invalid configuration)
+        diagonals = [
+            (-1, -1), (-1, 1), (1, -1), (1, 1)  # Diagonal directions
+        ]
+        for dr, dc in diagonals:
+            r, c = row + dr, col + dc
+            if 0 <= r < len(field) and 0 <= c < len(field[0]):
+                if field[r][c] == 1:
+                    return False  # Invalid if there is a neighboring boat part diagonally
+        return True
+
+    def mark_boat(row, col):
+        length = 1
+        field[row][col] = -1  # Mark this cell as visited
+
+        # Check horizontal length
+        horizontal_length = 1
+        col_ptr = col + 1
+        while col_ptr < len(field[0]) and field[row][col_ptr] == 1:
+            if not check_neighbors(row, col_ptr):
+                return 0  # Invalid configuration if diagonals are touching
+            field[row][col_ptr] = -1  # Mark as visited
+            horizontal_length += 1
+            col_ptr += 1
+
+        # Check vertical length if no horizontal boat found
+        if horizontal_length == 1:  # No horizontal boat
+            vertical_length = 1
+            row_ptr = row + 1
+            while row_ptr < len(field) and field[row_ptr][col] == 1:
+                if not check_neighbors(row_ptr, col):
+                    return 0  # Invalid configuration if diagonals are touching
+                field[row_ptr][col] = -1  # Mark as visited
+                vertical_length += 1
+                row_ptr += 1
+
+            length = vertical_length
+        else:
+            length = horizontal_length
+
+        return length
+
+    # Iterate over the grid to find boats
+    for r in range(len(field)):
+        for c in range(len(field[r])):
+            if field[r][c] == 1:  # Found a boat part
+                if check_neighbors(r, c):  # Check for valid neighbor placement
+                    boat_length = mark_boat(r, c)
+                    if boat_length == 0:
+                        print(f"Invalid placement at row {r}, column {c}")
+                        return False
+                    elif str(boat_length) in boats:
+                        boats[str(boat_length)] += 1
                     else:
-                        break
-                #print (f"The length of the boat is {count_boat}")
-                if f'{count_boat}' in boats.keys():
-                    boats[f'{count_boat}'] += 1
-                count_boat = 0
-            elif field[boat_row][boat_column] == 1 and field[boat_row][boat_column - 1] != 1 and field[boat_row + 1][boat_column] != 1 and field[boat_row - 1][boat_column] != 1:
-                #print (f'There might be a boat on column: {boat_column} - row: {boat_row}')
-                for index_col in range(boat_column, len(field[boat_row])):
-                    if field[boat_row][index_col] == 1:
-                        count_boat += 1
-                    else:
-                        break
-                #print (f"The length of the boat is {count_boat}")
-                if f'{count_boat}' in boats.keys():
-                    boats[f'{count_boat}'] += 1
-                count_boat = 0
-            #elif field[boat_row][boat_column] == 1 and (field[boat_row + 1][boat_column] == 1 or field[boat_row + 1][boat_column - 1] == 1 or field[boat_row + 1][boat_column + 1] == 1 or field[boat_row][boat_column - 1] == 1 or field[boat_row][boat_column + 1] == 1 or field[boat_row - 1][boat_column - 1] == 1 or field[boat_row - 1][boat_column] == 1 or field[boat_row - 1][boat_column + 1] == 1):
-            elif field[boat_row][boat_column] == 1 and (field[boat_row + 1][boat_column - 1] == 1 or field[boat_row + 1][boat_column + 1] == 1 or field[boat_row - 1][boat_column - 1] == 1 or field[boat_row - 1][boat_column + 1] == 1):
-                print("There is an error with this configuration")
-                print (f'There might be a error on column: {boat_column} - row: {boat_row}')
+                        print(f"Invalid boat length found: {boat_length}")
+                        return False
+                else:
+                    print(f"Invalid placement at row {r}, column {c}")
+                    return False
 
-    #print (field)
-    print (boats)
-    if (boats == correct_boats):
-        print("Correct configuration")
-    else:
-        print("There is something wrong")
+    print(boats)
+    return boats == correct_boats
 
+# Example of a correct board:
+board = [
+    [1, 0, 0, 0, 0, 1, 1, 0, 0, 0],
+    [1, 0, 1, 0, 0, 0, 0, 0, 1, 0],
+    [1, 0, 1, 0, 1, 1, 1, 0, 1, 0],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+    [0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+    [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+]
 
-
-battleField = [[1, 0, 0, 0, 0, 1, 1, 0, 0, 0],
-               [1, 0, 1, 0, 0, 0, 0, 0, 1, 0],
-               [1, 0, 1, 0, 1, 1, 1, 0, 1, 0],
-               [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-               [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
-               [0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
-               [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
-               [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-               [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
-               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
-validate_battlefield(battleField)
+print("Valid battlefield:", validate_battlefield(board))
