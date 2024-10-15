@@ -40,7 +40,6 @@ def almost_awesome(number, action):
 def check_palindrome(pal_num):
     str_number = str(pal_num)
     rotated_str_number = str_number[::-1]
-    #print (f'Number: {str_number} - Rotated: {rotated_str_number}')
 
     # Check for palindrome
     if str_number == rotated_str_number and pal_num > 99:
@@ -51,7 +50,6 @@ def check_palindrome(pal_num):
 def check_zeros(str_number):
     # Check if its follow by 0
     zeros = 1
-    #print (f'Zeroes: {len(str_number)}')
     if int(str_number) > 98:
         for index in range(1, len(str_number)):
             if str_number[index] != '0':
@@ -92,7 +90,6 @@ def asc_desc(str_number):
     else:
         return 0
     
-    #print (f'asc: {ascending} - desc: {descending}')
     if ascending == 1 or descending == 1:
         return 2
     else:
@@ -102,8 +99,6 @@ def is_interesting(number, awesome_phrases):
     result = 0
     str_number = str(number)
     
-    print (f'###NUMBER: {number}###')
-
     # Check for > 99
     if number < 99:
         result == 0
@@ -112,7 +107,6 @@ def is_interesting(number, awesome_phrases):
     awesome_element = 0
     if awesome_phrases:
         if number in awesome_phrases:
-            #print('Awesome: 2')
             result = 2
         else: 
             # Check if its near some awesome number
@@ -123,19 +117,16 @@ def is_interesting(number, awesome_phrases):
                 result = 1
             else:
                 result = 0
-            #print(f'Awesome: {awesome_element}')
 
     if result == 0:
-        if (check_zeros(str_number) == 2):
-            #print("zeros")
-            result = 2
-        else:
-            if (asc_desc(str_number) == 2):
-                #print ("asc_desc")
+        if number > 97:
+            if (check_zeros(str_number) == 2):
                 result = 2
             else:
-                result = check_palindrome(number)
-                #print ("palindrome")
+                if (asc_desc(str_number) == 2):
+                    result = 2
+                else:
+                    result = check_palindrome(number)
         
     print (f'The number: {number} - result: {result}')
     return result
@@ -147,6 +138,7 @@ def is_interesting(number, awesome_phrases):
 #is_interesting(30, []) # 0
 #is_interesting(97, []) # 0
 is_interesting(98, []) # 1
+#is_interesting(1, []) # 1
 
 ## progress as we near an "interesting" number
 #is_interesting(11207, []) # 0
