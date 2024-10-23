@@ -4,7 +4,6 @@ def hamming(n):
     
     #print (len(hammings))
     while len(hammings) < n:
-        #print ("In the while")
         num_2 = hammings[i] * 2
         num_3 = hammings[j] * 3
         num_5 = hammings[k] * 5 
@@ -15,16 +14,14 @@ def hamming(n):
         
         if next_hamming == num_2:
             i += 1
-        elif next_hamming == num_3:
+        if next_hamming == num_3:
             j += 1
-        elif next_hamming == num_5:
+        if next_hamming == num_5:
             k += 1
             
-    print(hammings)
+    print(hammings[len(hammings)-1])
+    return hammings[len(hammings)-1]
         
-
-
-
 #hamming(1)  #, 1, "hamming(1) should be 1")
 #hamming(2)  #, 2, "hamming(2) should be 2")
 #hamming(3)  #, 3, "hamming(3) should be 3")
@@ -33,7 +30,7 @@ def hamming(n):
 #hamming(6)  #, 6, "hamming(6) should be 6")
 #hamming(7)  #, 8, "hamming(7) should be 8")
 #hamming(8)  #, 9, "hamming(8) should be 9")
-hamming(9)  #, 10, "hamming(9) should be 10")
+#hamming(9)  #, 10, "hamming(9) should be 10")
 #hamming(10) #, 12, "hamming(10) should be 12")
 #hamming(11) #, 15, "hamming(11) should be 15")
 #hamming(12) #, 16, "hamming(12) should be 16")
