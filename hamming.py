@@ -1,25 +1,25 @@
 def hamming(n):
-    hammings = []
+    hammings = [1]
+    i = j = k = 0
     
-    i = 0
-    j = 0
-    k = 0
-    print (len(hammings))
+    #print (len(hammings))
     while len(hammings) < n:
-        print ("In the while")
+        #print ("In the while")
+        num_2 = hammings[i] * 2
+        num_3 = hammings[j] * 3
+        num_5 = hammings[k] * 5 
         
-        hammer = (2**i)*(3**j)*(5**k)
-        print (f'Hammer: {hammer} - i: {i} - j: {j} - k: {k}')
-        hammings.append(hammer)
+        next_hamming = min(num_2, num_3, num_5)
+        #print (f'Hammer: {next_hamming} - i: {i} - j: {j} - k: {k}')
+        hammings.append(next_hamming)
         
-        if i == j == k:
+        if next_hamming == num_2:
             i += 1
-        elif j < i:
+        elif next_hamming == num_3:
             j += 1
-        elif k < j:
+        elif next_hamming == num_5:
             k += 1
             
-    hammings.sort()
     print(hammings)
         
 
