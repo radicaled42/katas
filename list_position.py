@@ -1,34 +1,37 @@
-import itertools
+import math
+from collections import Counter
 
-#def get_permutations(word_list):
-#    if len(word_list) == 0:
-#        return []
-# 
-#    if len(word_list) == 1:
-#        return [word_list]
-#
-#    perm_list = []
-# 
-#    for index in range(len(word_list)):
-#       main_letter = word_list[index]
-#       remain_list = word_list[:index] + word_list[index+1:]
-#
-#       for post_word in get_permutations(remain_list):
-#           #print (post_word)
-#           perm_list.append([main_letter] + list(post_word))
-#        
-#    return perm_list
+def factorial(n):
+    return math.factorial(n)
 
 def list_position(word):
-    #word_list = list(set([''.join(word) for word in get_permutations(word)]))
-    word_list = sorted(set([''.join(word) for word in itertools.permutations(word)]))
-    #word_list.sort()
-    #print(word_list)
-    word_index = word_list.index(word)
-    print(word_index+1)
-    return word_index+1
-
+    # Convert the word into a list of characters
+    length = len(word)
+    word_count = Counter(word)  # Create a frequency count of each character
+    position = 1  # Start counting from 1 for 1-based index
     
+    print(word_count)
+    
+    for i in range(length):
+        for char in sorted(word_count):
+            if char < word[i]:
+                # Temporarily decrease the count of `char` and calculate permutations
+                if word_count[char] > 0:  # Ensure no negative values
+                    word_count[char] -= 1
+                    permutations = factorial(length - i - 1) // \
+                                   math.prod(factorial(v) for v in word_count.values() if v > 0)
+                    position += permutations
+                    word_count[char] += 1  # Restore the count
+            else:
+                break
+        
+        word_count[word[i]] -= 1  # Decrease the count of the current character
+        if word_count[word[i]] < 0:
+            raise ValueError("Count of characters cannot be negative.")
+    
+    print(position)
+    return position
+
 
 #list_position('A') # : 1
 #list_position('ABAB') # : 2
